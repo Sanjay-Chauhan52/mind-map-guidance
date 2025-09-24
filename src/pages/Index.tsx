@@ -11,11 +11,20 @@ const Index = () => {
       {/* Header */}
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center gap-2">
-            <div className="h-10 w-10 rounded-lg bg-gradient-primary flex items-center justify-center">
-              <GraduationCap className="h-6 w-6 text-primary-foreground" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="h-10 w-10 rounded-lg bg-gradient-primary flex items-center justify-center">
+                <GraduationCap className="h-6 w-6 text-primary-foreground" />
+              </div>
+              <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">EduGuide</h1>
             </div>
-            <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">EduGuide</h1>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/auth')}
+              className="border-primary/20 hover:bg-primary/10"
+            >
+              Login / Sign Up
+            </Button>
           </div>
           <p className="text-muted-foreground mt-2 text-lg">Your Digital Academic & Career Guidance Platform</p>
         </div>
@@ -31,29 +40,61 @@ const Index = () => {
           personalized career guidance, job opportunities, and latest education news.
         </p>
         
-        {/* Main Action Card */}
-        <div className="max-w-2xl mx-auto mb-16">
-          <Card className="shadow-elegant hover:shadow-xl transition-all duration-300 border-primary/20" 
+        {/* Main Action Card - Smaller Size */}
+        <div className="max-w-xl mx-auto mb-12">
+          <Card className="shadow-elegant hover:shadow-xl transition-all duration-300 border-primary/20 cursor-pointer" 
                 onClick={() => navigate('/quiz/class10')}>
-            <CardHeader>
-              <div className="flex justify-center mb-6">
-                <div className="h-16 w-16 rounded-full bg-gradient-primary flex items-center justify-center">
-                  <BookOpen className="h-8 w-8 text-primary-foreground" />
+            <CardHeader className="pb-4">
+              <div className="flex justify-center mb-4">
+                <div className="h-12 w-12 rounded-full bg-gradient-primary flex items-center justify-center">
+                  <BookOpen className="h-6 w-6 text-primary-foreground" />
                 </div>
               </div>
-              <CardTitle className="text-3xl mb-2">Class 10 Students</CardTitle>
-              <CardDescription className="text-lg">
+              <CardTitle className="text-2xl mb-2">Class 10 Students</CardTitle>
+              <CardDescription className="text-base">
                 Discover your ideal stream for 11th & 12th grade
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground mb-8 text-lg">
+            <CardContent className="pt-0">
+              <p className="text-muted-foreground mb-6">
                 Take our comprehensive 15-question aptitude test to find the perfect stream: 
-                Science (PCM/PCB), Commerce, or Arts based on your interests and abilities.
+                Science (PCM/PCB), Commerce, or Arts.
               </p>
               <Button size="lg" className="w-full h-12 text-lg bg-gradient-primary hover:opacity-90 transition-opacity">
                 Start Stream Assessment
               </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Colleges & Courses Section */}
+        <div className="mb-12">
+          <h3 className="text-3xl font-bold text-center mb-8 text-foreground">
+            Explore Colleges & Courses
+          </h3>
+          <Card className="shadow-soft max-w-4xl mx-auto" onClick={() => navigate('/colleges')}>
+            <CardContent className="p-8">
+              <div className="grid md:grid-cols-2 gap-6 items-center">
+                <div>
+                  <h4 className="text-2xl font-semibold mb-4">Government Colleges Database</h4>
+                  <p className="text-muted-foreground mb-4 leading-relaxed">
+                    Access comprehensive information about top government colleges, their courses, 
+                    fee structures, and eligibility criteria. Find the perfect college for your chosen stream.
+                  </p>
+                  <ul className="text-sm text-muted-foreground space-y-2">
+                    <li>• Engineering & Medical Colleges</li>
+                    <li>• Commerce & Arts Institutions</li>
+                    <li>• Fee Structure & Eligibility</li>
+                    <li>• Admission Process Details</li>
+                  </ul>
+                </div>
+                <div className="bg-gradient-primary/10 rounded-lg p-6 text-center">
+                  <div className="text-3xl font-bold text-primary mb-2">500+</div>
+                  <div className="text-muted-foreground">Colleges Listed</div>
+                  <div className="text-2xl font-bold text-primary mt-4 mb-2">1000+</div>
+                  <div className="text-muted-foreground">Courses Available</div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>

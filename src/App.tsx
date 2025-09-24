@@ -9,6 +9,8 @@ import QuizClass10 from "./pages/QuizClass10";
 import ResultsClass10 from "./pages/ResultsClass10";
 import Jobs from "./pages/Jobs";
 import News from "./pages/News";
+import Colleges from "./pages/Colleges";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +29,8 @@ function App() {
               <Route path="/results/class10" element={<ResultsClass10 />} />
               <Route path="/jobs" element={<Jobs />} />
               <Route path="/news" element={<News />} />
+              <Route path="/colleges" element={<Colleges />} />
+              <Route path="/auth" element={<Auth />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

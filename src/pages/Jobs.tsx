@@ -8,12 +8,28 @@ import { ArrowLeft, Briefcase, MapPin, Clock, ExternalLink, Search } from "lucid
 interface Job {
   job_id: string;
   job_title: string;
+  job_publisher?: string;
   employer_name: string;
   job_location?: string;
   job_description: string;
   job_apply_link: string;
   job_employment_type?: string;
   job_posted_at_datetime_utc?: string;
+  job_min_salary?: number;
+  job_max_salary?: number;
+  job_salary_currency?: string;
+  job_salary_period?: string;
+  job_benefits?: string[];
+  job_required_experience?: {
+    no_experience_required?: boolean;
+    required_experience_in_months?: number;
+  };
+  job_required_skills?: string[];
+  job_required_education?: {
+    postgraduate_degree?: boolean;
+    professional_certification?: boolean;
+    high_school?: boolean;
+  };
 }
 
 const Jobs = () => {
@@ -22,6 +38,7 @@ const Jobs = () => {
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("entry level internship student");
   const [error, setError] = useState<string | null>(null);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
   const searchJobs = async (query: string) => {
     setLoading(true);
@@ -69,9 +86,26 @@ const Jobs = () => {
     }
   };
 
-  const truncateDescription = (description: string, maxLength: number = 200) => {
-    if (description.length <= maxLength) return description;
-    return description.substring(0, maxLength) + '...';
+  const formatSalary = (job: Job) => {
+    if (job.job_min_salary && job.job_max_salary) {
+      const currency = job.job_salary_currency || 'USD';
+      const period = job.job_salary_period || 'YEAR';
+      return `${currency} ${job.job_min_salary.toLocaleString()} - ${job.job_max_salary.toLocaleString()} per ${period.toLowerCase()}`;
+    }
+    return 'Salary not specified';
+  };
+
+  const formatExperience = (experience?: Job['job_required_experience']) => {
+    if (!experience) return 'Experience not specified';
+    if (experience.no_experience_required) return 'No experience required';
+    if (experience.required_experience_in_months) {
+      const years = Math.floor(experience.required_experience_in_months / 12);
+      const months = experience.required_experience_in_months % 12;
+      if (years > 0 && months > 0) return `${years} years ${months} months`;
+      if (years > 0) return `${years} years`;
+      return `${months} months`;
+    }
+    return 'Experience not specified';
   };
 
   return (
@@ -154,7 +188,7 @@ const Jobs = () => {
                     <div className="flex justify-between items-start gap-4">
                       <div className="flex-1">
                         <CardTitle className="text-xl mb-2">{job.job_title}</CardTitle>
-                        <div className="flex items-center gap-4 text-muted-foreground text-sm">
+                        <div className="flex items-center gap-4 text-muted-foreground text-sm mb-2">
                           <div className="flex items-center gap-1">
                             <Briefcase className="h-4 w-4" />
                             <span>{job.employer_name}</span>
@@ -172,18 +206,24 @@ const Jobs = () => {
                             </div>
                           )}
                         </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm text-muted-foreground">
-                          Posted: {formatDate(job.job_posted_at_datetime_utc)}
-                        </p>
+                        <div className="text-sm space-y-1">
+                          <div className="text-primary font-semibold">
+                            {formatSalary(job)}
+                          </div>
+                          <div className="text-muted-foreground">
+                            Experience: {formatExperience(job.job_required_experience)}
+                          </div>
+                          <div className="text-muted-foreground">
+                            Posted: {formatDate(job.job_posted_at_datetime_utc)}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </CardHeader>
                   
                   <CardContent>
                     <p className="text-muted-foreground mb-4 leading-relaxed">
-                      {truncateDescription(job.job_description)}
+                      {job.job_description.substring(0, 150)}...
                     </p>
                     
                     <div className="flex justify-between items-center">
@@ -193,15 +233,29 @@ const Jobs = () => {
                             {job.job_employment_type}
                           </span>
                         )}
+                        {job.job_required_experience?.no_experience_required && (
+                          <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">
+                            No Experience Required
+                          </span>
+                        )}
                       </div>
                       
-                      <Button 
-                        onClick={() => window.open(job.job_apply_link, '_blank')}
-                        className="bg-gradient-primary hover:opacity-90 transition-opacity"
-                      >
-                        Apply Now
-                        <ExternalLink className="h-4 w-4 ml-2" />
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="outline"
+                          onClick={() => setSelectedJob(job)}
+                          className="border-primary/20"
+                        >
+                          View Details
+                        </Button>
+                        <Button 
+                          onClick={() => window.open(job.job_apply_link, '_blank')}
+                          className="bg-gradient-primary hover:opacity-90 transition-opacity"
+                        >
+                          Apply Now
+                          <ExternalLink className="h-4 w-4 ml-2" />
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -232,6 +286,112 @@ const Jobs = () => {
             </Card>
           )}
         </div>
+
+        {/* Job Details Modal */}
+        {selectedJob && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <Card className="w-full max-w-4xl max-h-[90vh] overflow-auto">
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle className="text-2xl mb-2">{selectedJob.job_title}</CardTitle>
+                    <div className="flex items-center gap-4 text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <Briefcase className="h-4 w-4" />
+                        <span>{selectedJob.employer_name}</span>
+                      </div>
+                      {selectedJob.job_location && (
+                        <div className="flex items-center gap-1">
+                          <MapPin className="h-4 w-4" />
+                          <span>{selectedJob.job_location}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    onClick={() => setSelectedJob(null)}
+                    className="h-8 w-8 p-0"
+                  >
+                    ✕
+                  </Button>
+                </div>
+              </CardHeader>
+              
+              <CardContent className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-semibold mb-2">Salary Information</h4>
+                    <p className="text-primary font-medium">{formatSalary(selectedJob)}</p>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-semibold mb-2">Experience Required</h4>
+                    <p>{formatExperience(selectedJob.job_required_experience)}</p>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-semibold mb-2">Employment Type</h4>
+                    <p>{selectedJob.job_employment_type || 'Not specified'}</p>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-semibold mb-2">Posted Date</h4>
+                    <p>{formatDate(selectedJob.job_posted_at_datetime_utc)}</p>
+                  </div>
+                </div>
+                
+                {selectedJob.job_required_skills && selectedJob.job_required_skills.length > 0 && (
+                  <div>
+                    <h4 className="font-semibold mb-2">Required Skills</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedJob.job_required_skills.map((skill, index) => (
+                        <span key={index} className="bg-primary/10 text-primary px-2 py-1 rounded text-sm">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {selectedJob.job_benefits && selectedJob.job_benefits.length > 0 && (
+                  <div>
+                    <h4 className="font-semibold mb-2">Benefits</h4>
+                    <ul className="list-disc list-inside space-y-1">
+                      {selectedJob.job_benefits.map((benefit, index) => (
+                        <li key={index} className="text-muted-foreground">{benefit}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                
+                <div>
+                  <h4 className="font-semibold mb-2">Job Description</h4>
+                  <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                    {selectedJob.job_description}
+                  </p>
+                </div>
+                
+                <div className="flex gap-4 pt-4 border-t">
+                  <Button
+                    variant="outline"
+                    onClick={() => setSelectedJob(null)}
+                    className="flex-1"
+                  >
+                    Close
+                  </Button>
+                  <Button
+                    onClick={() => window.open(selectedJob.job_apply_link, '_blank')}
+                    className="flex-1 bg-gradient-primary hover:opacity-90"
+                  >
+                    Apply Now
+                    <ExternalLink className="h-4 w-4 ml-2" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </main>
     </div>
   );
