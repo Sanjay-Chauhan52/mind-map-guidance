@@ -57,6 +57,106 @@ const questions = [
       { value: "success", label: "Financial success and business growth", stream: "commerce" },
       { value: "expression", label: "Self-expression and creativity", stream: "arts" }
     ]
+  },
+  {
+    id: 6,
+    question: "Which work environment appeals to you?",
+    options: [
+      { value: "lab", label: "Laboratory or tech workspace", stream: "pcm" },
+      { value: "hospital", label: "Hospital or research facility", stream: "pcb" },
+      { value: "office", label: "Corporate office or business setting", stream: "commerce" },
+      { value: "studio", label: "Creative studio or community center", stream: "arts" }
+    ]
+  },
+  {
+    id: 7,
+    question: "What kind of thinking do you excel at?",
+    options: [
+      { value: "analytical", label: "Analytical and mathematical thinking", stream: "pcm" },
+      { value: "scientific", label: "Scientific reasoning and research", stream: "pcb" },
+      { value: "strategic", label: "Strategic planning and decision making", stream: "commerce" },
+      { value: "creative", label: "Creative and abstract thinking", stream: "arts" }
+    ]
+  },
+  {
+    id: 8,
+    question: "Which activity would you choose for a school project?",
+    options: [
+      { value: "robot", label: "Building a robot or coding an app", stream: "pcm" },
+      { value: "research", label: "Researching environmental issues", stream: "pcb" },
+      { value: "business_plan", label: "Creating a business plan", stream: "commerce" },
+      { value: "documentary", label: "Making a documentary or art piece", stream: "arts" }
+    ]
+  },
+  {
+    id: 9,
+    question: "What type of books do you prefer reading?",
+    options: [
+      { value: "science_books", label: "Science and technology books", stream: "pcm" },
+      { value: "biology_books", label: "Biology and medical journals", stream: "pcb" },
+      { value: "business_books", label: "Business and economics books", stream: "commerce" },
+      { value: "literature", label: "Literature and philosophy", stream: "arts" }
+    ]
+  },
+  {
+    id: 10,
+    question: "How do you prefer to learn new concepts?",
+    options: [
+      { value: "formulas", label: "Through formulas and calculations", stream: "pcm" },
+      { value: "experiments", label: "Through experiments and observation", stream: "pcb" },
+      { value: "case_studies", label: "Through case studies and examples", stream: "commerce" },
+      { value: "discussions", label: "Through discussions and storytelling", stream: "arts" }
+    ]
+  },
+  {
+    id: 11,
+    question: "Which skill would you like to develop further?",
+    options: [
+      { value: "programming", label: "Programming and technical skills", stream: "pcm" },
+      { value: "research_skills", label: "Research and analytical skills", stream: "pcb" },
+      { value: "leadership", label: "Leadership and management skills", stream: "commerce" },
+      { value: "communication", label: "Communication and creative skills", stream: "arts" }
+    ]
+  },
+  {
+    id: 12,
+    question: "What type of challenges excite you?",
+    options: [
+      { value: "technical", label: "Technical problems and puzzles", stream: "pcm" },
+      { value: "medical", label: "Understanding complex biological systems", stream: "pcb" },
+      { value: "business_challenges", label: "Market analysis and business strategies", stream: "commerce" },
+      { value: "social", label: "Social issues and human behavior", stream: "arts" }
+    ]
+  },
+  {
+    id: 13,
+    question: "Which extracurricular activity interests you most?",
+    options: [
+      { value: "robotics", label: "Robotics club or coding competitions", stream: "pcm" },
+      { value: "science_club", label: "Science club or biology olympiad", stream: "pcb" },
+      { value: "business_club", label: "Business club or entrepreneurship programs", stream: "commerce" },
+      { value: "debate", label: "Debate club or cultural activities", stream: "arts" }
+    ]
+  },
+  {
+    id: 14,
+    question: "What drives your curiosity the most?",
+    options: [
+      { value: "how_things_work", label: "How machines and technology work", stream: "pcm" },
+      { value: "living_systems", label: "How living systems function", stream: "pcb" },
+      { value: "market_trends", label: "Market trends and economic patterns", stream: "commerce" },
+      { value: "human_behavior", label: "Human behavior and social dynamics", stream: "arts" }
+    ]
+  },
+  {
+    id: 15,
+    question: "Which future vision excites you most?",
+    options: [
+      { value: "tech_innovator", label: "Being a tech innovator or engineer", stream: "pcm" },
+      { value: "healthcare", label: "Contributing to healthcare and medicine", stream: "pcb" },
+      { value: "business_leader", label: "Leading a business or startup", stream: "commerce" },
+      { value: "social_impact", label: "Making social impact through arts/education", stream: "arts" }
+    ]
   }
 ];
 
@@ -113,19 +213,19 @@ const QuizClass10 = () => {
   const question = questions[currentQuestion];
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b">
+    <div className="min-h-screen bg-gradient-hero">
+      <header className="border-b border-border/50 bg-card/80 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4">
           <Button
             variant="ghost"
             onClick={() => navigate('/')}
-            className="mb-2"
+            className="mb-2 hover:bg-primary/10"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
           </Button>
-          <h1 className="text-2xl font-bold text-foreground">Class 10 Stream Assessment</h1>
-          <p className="text-muted-foreground">Discover your ideal academic stream</p>
+          <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">Class 10 Stream Assessment</h1>
+          <p className="text-muted-foreground text-lg">Discover your ideal academic stream</p>
         </div>
       </header>
 
@@ -137,25 +237,25 @@ const QuizClass10 = () => {
               <span>Question {currentQuestion + 1} of {questions.length}</span>
               <span>{Math.round(progress)}% Complete</span>
             </div>
-            <Progress value={progress} className="w-full" />
+            <Progress value={progress} className="w-full h-2" />
           </div>
 
           {/* Question Card */}
-          <Card className="mb-8">
+          <Card className="mb-8 shadow-elegant border-primary/20">
             <CardHeader>
-              <CardTitle className="text-xl">{question.question}</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-2xl text-center">{question.question}</CardTitle>
+              <CardDescription className="text-center text-base">
                 Select the option that best describes you
               </CardDescription>
             </CardHeader>
             <CardContent>
               <RadioGroup value={selectedAnswer} onValueChange={handleAnswer}>
                 {question.options.map((option) => (
-                  <div key={option.value} className="flex items-center space-x-2 p-3 rounded-lg hover:bg-muted/50">
+                  <div key={option.value} className="flex items-center space-x-3 p-4 rounded-lg hover:bg-muted/50 transition-colors border border-transparent hover:border-primary/20">
                     <RadioGroupItem value={option.value} id={option.value} />
                     <Label 
                       htmlFor={option.value} 
-                      className="flex-1 cursor-pointer text-sm leading-relaxed"
+                      className="flex-1 cursor-pointer text-base leading-relaxed"
                     >
                       {option.label}
                     </Label>
@@ -171,6 +271,7 @@ const QuizClass10 = () => {
               variant="outline"
               onClick={handlePrevious}
               disabled={currentQuestion === 0}
+              className="border-primary/20 hover:bg-primary/10"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Previous
@@ -179,6 +280,7 @@ const QuizClass10 = () => {
             <Button
               onClick={handleNext}
               disabled={!selectedAnswer}
+              className="bg-gradient-primary hover:opacity-90 transition-opacity"
             >
               {currentQuestion === questions.length - 1 ? 'View Results' : 'Next'}
               <ArrowRight className="w-4 h-4 ml-2" />

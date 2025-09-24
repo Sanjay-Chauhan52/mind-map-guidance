@@ -1,0 +1,81 @@
+College,Course,Avg_Fee_per_year_INR,Eligibility_Criteria,Type
+Madras Medical College,MBBS,70000,NEET,Government
+Stanley Medical College,MBBS,70000,NEET,Government
+Sri Ramachandra Institute of Higher Education and Research,MBBS,2500000,NEET,Private (Deemed)
+Sri Ramachandra Institute of Higher Education and Research,BDS,600000,NEET,Private (Deemed)
+Saveetha Medical College,MBBS,2475000,NEET,Private (Deemed)
+Saveetha Dental College,BDS,800000,NEET,Private (Deemed)
+The Tamil Nadu Dr. M.G.R. Medical University,B.Pharm,50000,12th (PCB) + entrance,Government
+The Tamil Nadu Dr. M.G.R. Medical University,BPT,40000,12th (PCB),Government
+Apollo College of Nursing,B.Sc Nursing,100000,12th (PCB),Private
+M.A. Chidambaram College of Nursing,B.Sc Nursing,80000,12th (PCB),Private
+IIT Madras,B.Tech (Computer Science),220000,JEE Advanced (rank + cutoffs),IIT / Central
+IIT Madras,B.Tech (Electrical),220000,JEE Advanced (rank + cutoffs),IIT / Central
+IIT Madras,M.Tech,180000,GATE / IITM selection,Central
+IIT Madras,PhD,60000,Masters + IITM selection,Central
+IIT Madras,MBA (PGP),250000,CAT/GATE/Entrance,Central
+College of Engineering Guindy (Anna Univ),B.E Computer Science,110000,TNEA/12th PCM based counselling,State Univ
+College of Engineering Guindy (Anna Univ),B.E Mechanical,110000,TNEA/12th PCM based counselling,State Univ
+College of Engineering Guindy (Anna Univ),B.Tech (IT),110000,TNEA/12th PCM based counselling,State Univ
+College of Engineering Guindy (Anna Univ),M.E / M.Tech,90000,GATE/University selection,State Univ
+College of Engineering Guindy (Anna Univ),MBA,120000,Entrance/University norms,State Univ
+Loyola College,BA English,52000,12th merit / college counselling,Private (Autonomous)
+Loyola College,BSc Physics,52000,12th merit / college counselling,Private (Autonomous)
+Loyola College,BSc Computer Science,78000,12th merit / college counselling,Private (Autonomous)
+Loyola College,MSc Computer Science,120000,UG + college selection,Private (Autonomous)
+Loyola College,BBA,79000,12th merit / entrance (if any),Private (Autonomous)
+Madras Christian College (MCC),BA Economics,45000,12th merit / college selection,Private (Autonomous)
+Madras Christian College (MCC),BSc Chemistry,62000,12th merit / college selection,Private (Autonomous)
+Madras Christian College (MCC),BCom,83000,12th merit / college selection,Private (Autonomous)
+Madras Christian College (MCC),BCA,34000,12th merit / college selection,Private (Autonomous)
+Madras Christian College (MCC),MSc,65000,UG + entrance/merit,Private (Autonomous)
+Stella Maris College,BA / BSc (Arts/Science),60000,12th merit / college selection,Private (Womenâ€™s College)
+Stella Maris College,MSc,90000,UG + merit,Private (Womenâ€™s College)
+Stella Maris College,BSc Computer Science,80000,12th merit,Private (Womenâ€™s College)
+Stella Maris College,BEd,70000,UG + entrance/college norms,Private (Womenâ€™s College)
+Stella Maris College,PG Diploma,55000,UG + college rules,Private (Womenâ€™s College)
+SRM Institute of Science & Technology,B.Tech Computer Science,300000,SRMJEEE / JEE Main,Private (Deemed)
+SRM Institute of Science & Technology,B.Tech Mechanical,250000,SRMJEEE / JEE Main,Private (Deemed)
+SRM Institute of Science & Technology,BDS/Dental,600000,NEET/University norms,Private (Deemed)
+SRM Institute of Science & Technology,MBA,180000,CAT/CMAT/Uni test,Private (Deemed)
+SRM Institute of Science & Technology,BSc / BCA,90000,12th / SRM selection,Private (Deemed)
+Sathyabama Institute of Science & Technology,B.Tech (CSE),150000,12th + counselling / entrance,Private (Deemed)
+Sathyabama Institute of Science & Technology,M.Tech,90000,GATE / Univ selection,Private (Deemed)
+Sathyabama Institute of Science & Technology,BSc (IT),70000,12th merit,Private (Deemed)
+Sathyabama Institute of Science & Technology,BBA,60000,12th merit,Private (Deemed)
+Sathyabama Institute of Science & Technology,PhD,50000,GATE/UGC/University norms,Private (Deemed)
+SSN College of Engineering,B.Tech (CSE),240000,12th + Anna Univ counselling / JEE Main,Private
+SSN College of Engineering,B.Tech (ECE),180000,12th + counselling,Private
+SSN College of Engineering,M.Tech,100000,GATE/selection,Private
+SSN College of Engineering,B.Arch,220000,NATA/12th + portfolio,Private
+SSN College of Engineering,MBA,140000,CAT / college entrance,Private
+Saveetha Institute,B.Tech (CSE),160000,12th / entrance / JEE,Private
+Saveetha Institute,BDS,600000,NEET,Private
+Saveetha Institute,MBBS,700000,NEET,Private
+Saveetha Institute,M.Pharm,120000,GPAT/UG merit,Private
+Saveetha Institute,BSc Nursing,100000,12th / entrance,Private
+Hindustan Institute of Technology & Science,B.Tech (CSE),200000,12th / JEE / counselling,Private (Deemed)
+Hindustan Institute of Technology & Science,B.Tech (Mech),150000,12th / counselling,Private (Deemed)
+Hindustan Institute of Technology & Science,MBA,120000,CAT/college test,Private (Deemed)
+Hindustan Institute of Technology & Science,PhD,50000,Gate/UGC/IH norms,Private (Deemed)
+Hindustan Institute of Technology & Science,BSc,70000,12th merit,Private (Deemed)
+VIT Chennai Campus,B.Tech (CSE),220000,VITEEE / JEE / counselling,Private (Deemed)
+VIT Chennai Campus,B.Tech (ECE),200000,VITEEE / JEE,Private (Deemed)
+VIT Chennai Campus,M.Tech,110000,GATE / Uni selection,Private (Deemed)
+VIT Chennai Campus,BBA,90000,12th / entrance,Private (Deemed)
+VIT Chennai Campus,BSc,80000,12th merit,Private (Deemed)
+Madras Medical College,MBBS,70000,NEET,Government
+Kilpauk Medical College,MBBS,70000,NEET,Government
+Kilpauk / Stanley Hospitals,Diploma / Allied,50000,12th / entrance,Government
+Dr. Ambedkar Govt Arts College,BA/ BCom,30000,12th merit,Government
+Ethiraj College for Women,BCom,50000,12th merit,Private (Womenâ€™s College)
+Ethiraj College for Women,BA,45000,12th merit,Private (Womenâ€™s College)
+Ethiraj College for Women,MSc,70000,UG + merit,Private (Womenâ€™s College)
+Guru Nanak College,BSc,42000,12th merit,Private (Autonomous)
+DG Vaishnav College,BCom / BBA,48000,12th merit,Private (Autonomous)
+Dr. MGR Janaki College,BEd,60000,UG + entrance,Private / Gov-aided
+Indian Maritime University Chennai,B.Tech (Marine),250000,12th + IMU CET,Central / Deemed
+Anna Adarsh College of Engineering,B.Tech,90000,12th + counselling,Private
+Chennai Mathematical Institute,BSc (Math),90000,Entrance (CMI),Private / Deemed
+Alagappa College of Technology,PG Courses,100000,GATE/Anna Univ selection,State Univ
+Meenakshi Sundararajan Engineering College,B.Tech,90000,12th + counselling,Private
