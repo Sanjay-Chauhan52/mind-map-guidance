@@ -70,33 +70,73 @@ const Index = () => {
         {/* Colleges & Courses Section */}
         <div className="mb-12">
           <h3 className="text-3xl font-bold text-center mb-8 text-foreground">
-            Explore Colleges & Courses
+            Explore Education Options
           </h3>
-          <Card className="shadow-soft max-w-4xl mx-auto" onClick={() => navigate('/colleges')}>
-            <CardContent className="p-8">
-              <div className="grid md:grid-cols-2 gap-6 items-center">
-                <div>
-                  <h4 className="text-2xl font-semibold mb-4">Government Colleges Database</h4>
-                  <p className="text-muted-foreground mb-4 leading-relaxed">
-                    Access comprehensive information about top government colleges, their courses, 
-                    fee structures, and eligibility criteria. Find the perfect college for your chosen stream.
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {/* Colleges Card */}
+            <Card className="shadow-soft hover:shadow-elegant transition-all duration-300 cursor-pointer" onClick={() => navigate('/colleges')}>
+              <CardContent className="p-6">
+                <div className="text-center">
+                  <div className="h-16 w-16 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-4">
+                    <GraduationCap className="h-8 w-8 text-primary-foreground" />
+                  </div>
+                  <h4 className="text-xl font-semibold mb-2">Browse Colleges</h4>
+                  <p className="text-muted-foreground mb-4">
+                    Discover top government and private colleges with detailed information
                   </p>
-                  <ul className="text-sm text-muted-foreground space-y-2">
-                    <li>• Engineering & Medical Colleges</li>
-                    <li>• Commerce & Arts Institutions</li>
-                    <li>• Fee Structure & Eligibility</li>
-                    <li>• Admission Process Details</li>
-                  </ul>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>Government Colleges:</span>
+                      <span className="font-medium">200+</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Private Colleges:</span>
+                      <span className="font-medium">300+</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Cities Covered:</span>
+                      <span className="font-medium">Chennai</span>
+                    </div>
+                  </div>
+                  <Button className="w-full mt-4 bg-gradient-primary hover:opacity-90">
+                    View All Colleges
+                  </Button>
                 </div>
-                <div className="bg-gradient-primary/10 rounded-lg p-6 text-center">
-                  <div className="text-3xl font-bold text-primary mb-2">500+</div>
-                  <div className="text-muted-foreground">Colleges Listed</div>
-                  <div className="text-2xl font-bold text-primary mt-4 mb-2">1000+</div>
-                  <div className="text-muted-foreground">Courses Available</div>
+              </CardContent>
+            </Card>
+
+            {/* Courses Card */}
+            <Card className="shadow-soft hover:shadow-elegant transition-all duration-300 cursor-pointer" onClick={() => navigate('/courses')}>
+              <CardContent className="p-6">
+                <div className="text-center">
+                  <div className="h-16 w-16 rounded-full bg-gradient-accent flex items-center justify-center mx-auto mb-4">
+                    <BookOpen className="h-8 w-8 text-accent-foreground" />
+                  </div>
+                  <h4 className="text-xl font-semibold mb-2">Explore Courses</h4>
+                  <p className="text-muted-foreground mb-4">
+                    Find the perfect course across different streams and specializations
+                  </p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>Engineering Courses:</span>
+                      <span className="font-medium">50+</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Medical Courses:</span>
+                      <span className="font-medium">30+</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Other Streams:</span>
+                      <span className="font-medium">100+</span>
+                    </div>
+                  </div>
+                  <Button className="w-full mt-4 bg-gradient-accent hover:opacity-90">
+                    Browse Courses
+                  </Button>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         {/* Additional Features Grid */}
