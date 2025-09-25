@@ -12,8 +12,16 @@ interface College {
   Avg_Fee_per_year_INR: string;
   Eligibility_Criteria: string;
   Type: string;
-  City?: string; // Adding city field
+  City?: string;
 }
+
+// Career interests by stream
+const careerInterestsByStream = {
+  pcb: ["Doctor", "Nurse", "Scientist/Researcher", "Pharmacist", "Veterinarian", "Biotechnologist", "Agriculture Specialist"],
+  pcm: ["Engineer", "Pilot", "Architect", "Scientist/Researcher", "Entrepreneur", "Defense Services", "Computer Scientist"],
+  commerce: ["Chartered Accountant", "Lawyer", "Entrepreneur", "Corporate Manager", "Banker", "Business Administrator", "Social Worker"],
+  arts: ["Lawyer", "Journalist", "Teacher/Professor", "Social Worker", "Artist/Designer", "Psychologist", "Political Scientist"]
+};
 
 const Colleges = () => {
   const navigate = useNavigate();
@@ -24,6 +32,9 @@ const Colleges = () => {
   const [selectedType, setSelectedType] = useState("all");
   const [selectedStream, setSelectedStream] = useState("all");
   const [selectedCity, setSelectedCity] = useState("all");
+  const [selectedCareerInterest, setSelectedCareerInterest] = useState("all");
+  const [minFee, setMinFee] = useState("");
+  const [maxFee, setMaxFee] = useState("");
 
   useEffect(() => {
     // Load college data
@@ -76,14 +87,14 @@ const Colleges = () => {
       const course = (college: College) => college.Course.toLowerCase();
       filtered = filtered.filter(college => {
         switch (selectedStream) {
-          case "engineering":
-            return course(college).includes('b.tech') || course(college).includes('engineering') || course(college).includes('b.e');
-          case "medical":
-            return course(college).includes('mbbs') || course(college).includes('bds') || course(college).includes('nursing') || course(college).includes('b.pharm');
+          case "pcm":
+            return course(college).includes('b.tech') || course(college).includes('engineering') || course(college).includes('b.e') || course(college).includes('bca') || course(college).includes('computer');
+          case "pcb":
+            return course(college).includes('mbbs') || course(college).includes('bds') || course(college).includes('nursing') || course(college).includes('b.pharm') || course(college).includes('veterinary') || course(college).includes('biotechnology');
           case "commerce":
-            return course(college).includes('bcom') || course(college).includes('bba') || course(college).includes('bca');
+            return course(college).includes('bcom') || course(college).includes('bba') || course(college).includes('ca') || course(college).includes('cs') || course(college).includes('finance');
           case "arts":
-            return course(college).includes('ba') || (course(college).includes('bsc') && !course(college).includes('nursing'));
+            return course(college).includes('ba') || course(college).includes('law') || course(college).includes('journalism') || course(college).includes('psychology') || (course(college).includes('bsc') && !course(college).includes('nursing'));
           default:
             return true;
         }
@@ -97,21 +108,34 @@ const Colleges = () => {
       );
     }
 
+    // Filter by fees range
+    if (minFee || maxFee) {
+      filtered = filtered.filter(college => {
+        const fee = parseInt(college.Avg_Fee_per_year_INR);
+        const min = minFee ? parseInt(minFee) : 0;
+        const max = maxFee ? parseInt(maxFee) : Infinity;
+        return fee >= min && fee <= max;
+      });
+    }
+
     setFilteredColleges(filtered);
-  }, [searchQuery, selectedType, selectedStream, selectedCity, colleges]);
+  }, [searchQuery, selectedType, selectedStream, selectedCity, selectedCareerInterest, minFee, maxFee, colleges]);
 
   const getStreamBadgeColor = (course: string) => {
     const lowerCourse = course.toLowerCase();
-    if (lowerCourse.includes('b.tech') || lowerCourse.includes('engineering') || lowerCourse.includes('b.e')) {
-      return 'bg-blue-100 text-blue-800';
+    if (lowerCourse.includes('b.tech') || lowerCourse.includes('engineering') || lowerCourse.includes('b.e') || lowerCourse.includes('bca')) {
+      return 'bg-blue-100 text-blue-800 border-blue-200';
     }
-    if (lowerCourse.includes('mbbs') || lowerCourse.includes('bds') || lowerCourse.includes('nursing') || lowerCourse.includes('b.pharm')) {
-      return 'bg-green-100 text-green-800';
+    if (lowerCourse.includes('mbbs') || lowerCourse.includes('bds') || lowerCourse.includes('nursing') || lowerCourse.includes('b.pharm') || lowerCourse.includes('biotechnology')) {
+      return 'bg-green-100 text-green-800 border-green-200';
     }
-    if (lowerCourse.includes('bcom') || lowerCourse.includes('bba') || lowerCourse.includes('bca')) {
-      return 'bg-orange-100 text-orange-800';
+    if (lowerCourse.includes('bcom') || lowerCourse.includes('bba') || lowerCourse.includes('ca') || lowerCourse.includes('finance')) {
+      return 'bg-orange-100 text-orange-800 border-orange-200';
     }
-    return 'bg-purple-100 text-purple-800';
+    if (lowerCourse.includes('ba') || lowerCourse.includes('law') || lowerCourse.includes('journalism')) {
+      return 'bg-purple-100 text-purple-800 border-purple-200';
+    }
+    return 'bg-gray-100 text-gray-800 border-gray-200';
   };
 
   if (loading) {
@@ -157,56 +181,117 @@ const Colleges = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid md:grid-cols-5 gap-4">
-                <div className="md:col-span-2">
+              <div className="grid gap-4">
+                {/* First Row - Search and Primary Filters */}
+                <div className="grid md:grid-cols-4 gap-4">
+                  <div className="md:col-span-2">
+                    <Input
+                      type="text"
+                      placeholder="Search colleges or courses..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full"
+                    />
+                  </div>
+                  
+                  <Select value={selectedStream} onValueChange={(value) => {
+                    setSelectedStream(value);
+                    setSelectedCareerInterest("all"); // Reset career interest when stream changes
+                  }}>
+                    <SelectTrigger className="bg-background border-border">
+                      <SelectValue placeholder="Stream" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border-border z-50">
+                      <SelectItem value="all">All Streams</SelectItem>
+                      <SelectItem value="pcm">PCM (Physics, Chemistry, Maths)</SelectItem>
+                      <SelectItem value="pcb">PCB (Physics, Chemistry, Biology)</SelectItem>
+                      <SelectItem value="commerce">Commerce</SelectItem>
+                      <SelectItem value="arts">Arts</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <Select value={selectedCareerInterest} onValueChange={setSelectedCareerInterest}>
+                    <SelectTrigger className="bg-background border-border">
+                      <SelectValue placeholder="Career Interest" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border-border z-40">
+                      <SelectItem value="all">All Interests</SelectItem>
+                      {selectedStream !== "all" && selectedStream in careerInterestsByStream && 
+                        careerInterestsByStream[selectedStream as keyof typeof careerInterestsByStream].map((interest) => (
+                          <SelectItem key={interest} value={interest.toLowerCase()}>
+                            {interest}
+                          </SelectItem>
+                        ))
+                      }
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Second Row - Additional Filters */}
+                <div className="grid md:grid-cols-4 gap-4">
+                  <Select value={selectedCity} onValueChange={setSelectedCity}>
+                    <SelectTrigger className="bg-background border-border">
+                      <SelectValue placeholder="City" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border-border z-30">
+                      <SelectItem value="all">All Cities</SelectItem>
+                      <SelectItem value="chennai">Chennai</SelectItem>
+                      <SelectItem value="bangalore">Bangalore</SelectItem>
+                      <SelectItem value="mumbai">Mumbai</SelectItem>
+                      <SelectItem value="delhi">Delhi</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  
+                  <Select value={selectedType} onValueChange={setSelectedType}>
+                    <SelectTrigger className="bg-background border-border">
+                      <SelectValue placeholder="College Type" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border-border z-20">
+                      <SelectItem value="all">All Types</SelectItem>
+                      <SelectItem value="government">Government</SelectItem>
+                      <SelectItem value="private">Private</SelectItem>
+                      <SelectItem value="iit">IIT</SelectItem>
+                      <SelectItem value="central">Central</SelectItem>
+                    </SelectContent>
+                  </Select>
+
                   <Input
-                    type="text"
-                    placeholder="Search colleges or courses..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    type="number"
+                    placeholder="Min Fee (₹)"
+                    value={minFee}
+                    onChange={(e) => setMinFee(e.target.value)}
+                    className="w-full"
+                  />
+
+                  <Input
+                    type="number"
+                    placeholder="Max Fee (₹)"
+                    value={maxFee}
+                    onChange={(e) => setMaxFee(e.target.value)}
                     className="w-full"
                   />
                 </div>
-                
-                <Select value={selectedCity} onValueChange={setSelectedCity}>
-                  <SelectTrigger className="bg-background border-border z-50">
-                    <SelectValue placeholder="City" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-background border-border z-50">
-                    <SelectItem value="all">All Cities</SelectItem>
-                    <SelectItem value="chennai">Chennai</SelectItem>
-                  </SelectContent>
-                </Select>
-                
-                <Select value={selectedType} onValueChange={setSelectedType}>
-                  <SelectTrigger className="bg-background border-border z-40">
-                    <SelectValue placeholder="College Type" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-background border-border z-40">
-                    <SelectItem value="all">All Types</SelectItem>
-                    <SelectItem value="government">Government</SelectItem>
-                    <SelectItem value="private">Private</SelectItem>
-                    <SelectItem value="iit">IIT</SelectItem>
-                    <SelectItem value="central">Central</SelectItem>
-                  </SelectContent>
-                </Select>
-                
-                <Select value={selectedStream} onValueChange={setSelectedStream}>
-                  <SelectTrigger className="bg-background border-border z-30">
-                    <SelectValue placeholder="Stream" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-background border-border z-30">
-                    <SelectItem value="all">All Streams</SelectItem>
-                    <SelectItem value="engineering">Engineering</SelectItem>
-                    <SelectItem value="medical">Medical</SelectItem>
-                    <SelectItem value="commerce">Commerce</SelectItem>
-                    <SelectItem value="arts">Arts</SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
               
-              <div className="mt-4 text-sm text-muted-foreground">
-                Showing {filteredColleges.length} of {colleges.length} colleges
+              <div className="mt-4 flex justify-between items-center">
+                <div className="text-sm text-muted-foreground">
+                  Showing {filteredColleges.length} of {colleges.length} colleges
+                </div>
+                <Button 
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedType("all");
+                    setSelectedStream("all");
+                    setSelectedCity("all");
+                    setSelectedCareerInterest("all");
+                    setMinFee("");
+                    setMaxFee("");
+                  }}
+                  variant="outline"
+                  size="sm"
+                >
+                  Clear All Filters
+                </Button>
               </div>
             </CardContent>
           </Card>
