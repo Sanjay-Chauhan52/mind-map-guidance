@@ -29,7 +29,7 @@ const Index = () => {
 
   const handleAuthAction = () => {
     if (isAuthenticated) {
-      signOut();
+      navigate('/profile');
     } else {
       navigate('/auth');
     }
@@ -70,7 +70,7 @@ const Index = () => {
                 onClick={handleAuthAction}
                 className="border-primary/20 hover:bg-primary/10"
               >
-                {isAuthenticated ? 'Sign Out' : 'Login / Sign Up'}
+                {isAuthenticated ? 'Profile' : 'Login / Sign Up'}
               </Button>
             </div>
           </div>
