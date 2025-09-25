@@ -1,10 +1,50 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, BookOpen, TrendingUp, Briefcase, Newspaper } from "lucide-react";
+import { GraduationCap, BookOpen, TrendingUp, Briefcase, Newspaper, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useProfile } from "@/hooks/useProfile";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { user, profile, loading, signOut, hasProfile, isAuthenticated } = useProfile();
+
+  const handleQuizClick = () => {
+    if (!isAuthenticated) {
+      navigate('/auth');
+      return;
+    }
+    
+    if (!hasProfile) {
+      navigate('/profile');
+      return;
+    }
+    
+    // If user has profile, redirect based on their class
+    if (profile?.current_class === "10th") {
+      navigate('/quiz/class10');
+    } else {
+      navigate('/colleges');
+    }
+  };
+
+  const handleAuthAction = () => {
+    if (isAuthenticated) {
+      signOut();
+    } else {
+      navigate('/auth');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
+        <div className="text-center">
+          <div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-hero">
@@ -18,13 +58,21 @@ const Index = () => {
               </div>
               <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">EduGuide</h1>
             </div>
-            <Button 
-              variant="outline" 
-              onClick={() => navigate('/auth')}
-              className="border-primary/20 hover:bg-primary/10"
-            >
-              Login / Sign Up
-            </Button>
+            <div className="flex items-center gap-4">
+              {isAuthenticated && profile && (
+                <div className="flex items-center gap-2 text-sm">
+                  <User className="h-4 w-4" />
+                  <span>Welcome, {profile.name}</span>
+                </div>
+              )}
+              <Button 
+                variant="outline" 
+                onClick={handleAuthAction}
+                className="border-primary/20 hover:bg-primary/10"
+              >
+                {isAuthenticated ? 'Sign Out' : 'Login / Sign Up'}
+              </Button>
+            </div>
           </div>
           <p className="text-muted-foreground mt-2 text-lg">Your Digital Academic & Career Guidance Platform</p>
         </div>
@@ -43,25 +91,44 @@ const Index = () => {
         {/* Main Action Card - Smaller Size */}
         <div className="max-w-xl mx-auto mb-12">
           <Card className="shadow-elegant hover:shadow-xl transition-all duration-300 border-primary/20 cursor-pointer" 
-                onClick={() => navigate('/quiz/class10')}>
+                onClick={handleQuizClick}>
             <CardHeader className="pb-4">
               <div className="flex justify-center mb-4">
                 <div className="h-12 w-12 rounded-full bg-gradient-primary flex items-center justify-center">
                   <BookOpen className="h-6 w-6 text-primary-foreground" />
                 </div>
               </div>
-              <CardTitle className="text-2xl mb-2">Class 10 Students</CardTitle>
+              <CardTitle className="text-2xl mb-2">
+                {isAuthenticated && profile ? 
+                  (profile.current_class === "10th" ? "Class 10 Student" : "Class 12 Student") :
+                  "Class 10 Students"
+                }
+              </CardTitle>
               <CardDescription className="text-base">
-                Discover your ideal stream for 11th & 12th grade
+                {isAuthenticated && profile ?
+                  (profile.current_class === "10th" ? 
+                    "Discover your ideal stream for 11th & 12th grade" :
+                    "Find the perfect college for your career path"
+                  ) :
+                  "Discover your ideal stream for 11th & 12th grade"
+                }
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-0">
               <p className="text-muted-foreground mb-6">
-                Take our comprehensive 15-question aptitude test to find the perfect stream: 
-                Science (PCM/PCB), Commerce, or Arts.
+                {isAuthenticated && profile ?
+                  (profile.current_class === "10th" ? 
+                    "Take our comprehensive aptitude test to find the perfect stream: Science (PCM/PCB), Commerce, or Arts." :
+                    "Explore college recommendations based on your stream, location, and career interests."
+                  ) :
+                  "Take our comprehensive 15-question aptitude test to find the perfect stream: Science (PCM/PCB), Commerce, or Arts."
+                }
               </p>
               <Button size="lg" className="w-full h-12 text-lg bg-gradient-primary hover:opacity-90 transition-opacity">
-                Start Stream Assessment
+                {!isAuthenticated ? "Sign In to Start" :
+                  !hasProfile ? "Create Profile" :
+                  profile?.current_class === "10th" ? "Start Stream Assessment" : "Explore Colleges"
+                }
               </Button>
             </CardContent>
           </Card>
