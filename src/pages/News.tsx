@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Newspaper, ExternalLink, Calendar, User } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Newspaper, ExternalLink, Calendar, User, Clock, AlertCircle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface NewsArticle {
   title: string;
@@ -15,6 +17,9 @@ interface NewsArticle {
     name: string;
   };
   author?: string;
+  isDeadlineRelated?: boolean;
+  aiSummary?: string;
+  importanceScore?: number;
 }
 
 interface GuardianArticle {
@@ -26,6 +31,9 @@ interface GuardianArticle {
     trailText?: string;
     thumbnail?: string;
   };
+  isDeadlineRelated?: boolean;
+  aiSummary?: string;
+  importanceScore?: number;
 }
 
 const News = () => {
@@ -41,24 +49,19 @@ const News = () => {
       setError(null);
 
       try {
-        // Fetch from NewsAPI
-        const newsResponse = await fetch(
-          `https://newsapi.org/v2/everything?q=education+OR+career+OR+university+OR+college&sortBy=publishedAt&language=en&pageSize=10&apiKey=a0d97574f94c49b1b9d6fccf82a6b824`
-        );
-
-        if (newsResponse.ok) {
-          const newsData = await newsResponse.json();
-          setNewsArticles(newsData.articles || []);
+        const { data, error: supabaseError } = await supabase.functions.invoke('enhanced-education-news');
+        
+        if (supabaseError) {
+          console.error('Supabase function error:', supabaseError);
+          setError('Failed to load news. Please try again later.');
+          return;
         }
 
-        // Fetch from Guardian API
-        const guardianResponse = await fetch(
-          `https://content.guardianapis.com/search?q=education%20OR%20career%20OR%20university&show-fields=trailText,thumbnail&page-size=10&api-key=9f1f2584-2684-42ac-931e-33bb238f3c23`
-        );
-
-        if (guardianResponse.ok) {
-          const guardianData = await guardianResponse.json();
-          setGuardianArticles(guardianData.response?.results || []);
+        if (data?.success) {
+          setNewsArticles(data.newsArticles || []);
+          setGuardianArticles(data.guardianArticles || []);
+        } else {
+          setError(data?.error || 'Failed to load news. Please try again later.');
         }
       } catch (error) {
         console.error('Error fetching news:', error);
@@ -101,7 +104,7 @@ const News = () => {
             Back to Home
           </Button>
           <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">Education News</h1>
-          <p className="text-muted-foreground text-lg">Stay updated with latest education and career trends</p>
+          <p className="text-muted-foreground text-lg">AI-Enhanced news focusing on deadlines and important dates</p>
         </div>
       </header>
 
@@ -125,7 +128,7 @@ const News = () => {
           {!loading && !error && (
             <Tabs defaultValue="newsapi" className="w-full">
               <TabsList className="grid w-full grid-cols-2 mb-8">
-                <TabsTrigger value="newsapi">Latest News</TabsTrigger>
+                <TabsTrigger value="newsapi">AI-Enhanced News</TabsTrigger>
                 <TabsTrigger value="guardian">Guardian Education</TabsTrigger>
               </TabsList>
 
@@ -154,6 +157,20 @@ const News = () => {
                                 <CardTitle className="text-xl leading-tight">
                                   {article.title}
                                 </CardTitle>
+                                <div className="flex flex-col gap-2">
+                                  {article.isDeadlineRelated && (
+                                    <Badge variant="destructive" className="flex items-center gap-1">
+                                      <Clock className="h-3 w-3" />
+                                      Deadline Alert
+                                    </Badge>
+                                  )}
+                                  {article.importanceScore && article.importanceScore >= 8 && (
+                                    <Badge variant="secondary" className="flex items-center gap-1">
+                                      <AlertCircle className="h-3 w-3" />
+                                      High Priority
+                                    </Badge>
+                                  )}
+                                </div>
                               </div>
                               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                                 <div className="flex items-center gap-1">
@@ -170,11 +187,16 @@ const News = () => {
                                     <span>{article.author}</span>
                                   </div>
                                 )}
+                                {article.importanceScore && (
+                                  <div className="flex items-center gap-1">
+                                    <span className="text-xs font-medium">Score: {article.importanceScore}/10</span>
+                                  </div>
+                                )}
                               </div>
                             </CardHeader>
                             <CardContent>
                               <p className="text-muted-foreground mb-4 leading-relaxed">
-                                {truncateText(article.description || '')}
+                                {article.aiSummary ? truncateText(article.aiSummary) : truncateText(article.description || '')}
                               </p>
                               <Button
                                 onClick={() => window.open(article.url, '_blank')}
@@ -223,9 +245,25 @@ const News = () => {
                           )}
                           <div className="flex-1">
                             <CardHeader>
-                              <CardTitle className="text-xl leading-tight">
-                                {article.webTitle}
-                              </CardTitle>
+                              <div className="flex justify-between items-start gap-4">
+                                <CardTitle className="text-xl leading-tight">
+                                  {article.webTitle}
+                                </CardTitle>
+                                <div className="flex flex-col gap-2">
+                                  {article.isDeadlineRelated && (
+                                    <Badge variant="destructive" className="flex items-center gap-1">
+                                      <Clock className="h-3 w-3" />
+                                      Deadline Alert
+                                    </Badge>
+                                  )}
+                                  {article.importanceScore && article.importanceScore >= 8 && (
+                                    <Badge variant="secondary" className="flex items-center gap-1">
+                                      <AlertCircle className="h-3 w-3" />
+                                      High Priority
+                                    </Badge>
+                                  )}
+                                </div>
+                              </div>
                               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                                 <div className="flex items-center gap-1">
                                   <Newspaper className="h-4 w-4" />
@@ -235,14 +273,17 @@ const News = () => {
                                   <Calendar className="h-4 w-4" />
                                   <span>{formatDate(article.webPublicationDate)}</span>
                                 </div>
+                                {article.importanceScore && (
+                                  <div className="flex items-center gap-1">
+                                    <span className="text-xs font-medium">Score: {article.importanceScore}/10</span>
+                                  </div>
+                                )}
                               </div>
                             </CardHeader>
                             <CardContent>
-                              {article.fields?.trailText && (
-                                <p className="text-muted-foreground mb-4 leading-relaxed">
-                                  {truncateText(article.fields.trailText)}
-                                </p>
-                              )}
+                              <p className="text-muted-foreground mb-4 leading-relaxed">
+                                {article.aiSummary ? truncateText(article.aiSummary) : (article.fields?.trailText ? truncateText(article.fields.trailText) : 'No description available')}
+                              </p>
                               <Button
                                 onClick={() => window.open(article.webUrl, '_blank')}
                                 className="bg-gradient-primary hover:opacity-90 transition-opacity"
