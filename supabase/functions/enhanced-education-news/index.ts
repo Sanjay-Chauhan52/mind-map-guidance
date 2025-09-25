@@ -44,6 +44,11 @@ async function analyzeArticleWithAI(title: string, description: string): Promise
   aiSummary: string;
   importanceScore: number;
 }> {
+  // First, do basic keyword analysis as fallback
+  const content = `${title} ${description}`.toLowerCase();
+  const deadlineKeywords = ['deadline', 'due date', 'application', 'admission', 'enrollment', 'registration', 'exam date', 'test date'];
+  const hasDeadlineKeyword = deadlineKeywords.some(keyword => content.includes(keyword));
+  
   try {
     const prompt = `Analyze this education news article:
 Title: ${title}
@@ -100,17 +105,18 @@ Respond in JSON format:
     } catch (parseError) {
       console.error('Failed to parse AI response:', content);
       return {
-        isDeadlineRelated: false,
+        isDeadlineRelated: hasDeadlineKeyword,
         aiSummary: description || 'No description available',
-        importanceScore: 5
+        importanceScore: hasDeadlineKeyword ? 7 : 5
       };
     }
   } catch (error) {
     console.error('Error analyzing article with AI:', error);
+    // Fallback to keyword-based analysis
     return {
-      isDeadlineRelated: false,
+      isDeadlineRelated: hasDeadlineKeyword,
       aiSummary: description || 'No description available',
-      importanceScore: 5
+      importanceScore: hasDeadlineKeyword ? 7 : 5
     };
   }
 }
@@ -119,7 +125,7 @@ async function fetchNewsAPI(): Promise<NewsArticle[]> {
   try {
     console.log('Fetching from NewsAPI...');
     const response = await fetch(
-      `https://newsapi.org/v2/everything?q=education+OR+exam+OR+deadline+OR+admission+OR+university+OR+college&sortBy=publishedAt&language=en&pageSize=15&apiKey=${newsApiKey}`
+      `https://newsapi.org/v2/everything?q="education news" OR "exam deadline" OR "college admission" OR "university application" OR "scholarship deadline" OR "entrance exam"&sortBy=publishedAt&language=en&pageSize=15&apiKey=${newsApiKey}`
     );
 
     if (!response.ok) {
@@ -130,9 +136,27 @@ async function fetchNewsAPI(): Promise<NewsArticle[]> {
     const data = await response.json();
     const articles = data.articles || [];
     
-    // Analyze each article with AI
+    // Filter for education-related content first
+    const educationArticles = articles.filter((article: any) => {
+      const title = article.title?.toLowerCase() || '';
+      const description = article.description?.toLowerCase() || '';
+      const content = `${title} ${description}`;
+      
+      const educationKeywords = [
+        'education', 'school', 'university', 'college', 'exam', 'test', 'admission', 
+        'scholarship', 'student', 'academic', 'degree', 'course', 'learning', 
+        'study', 'graduation', 'enrollment', 'tuition', 'campus', 'deadline',
+        'application', 'transcript', 'gpa', 'sat', 'act', 'gre', 'toefl'
+      ];
+      
+      return educationKeywords.some(keyword => content.includes(keyword));
+    });
+    
+    console.log(`Filtered ${educationArticles.length} education articles from ${articles.length} total`);
+    
+    // Analyze each article with AI (with fallback)
     const enhancedArticles: NewsArticle[] = [];
-    for (const article of articles.slice(0, 10)) {
+    for (const article of educationArticles.slice(0, 10)) {
       const analysis = await analyzeArticleWithAI(
         article.title,
         article.description || ''
@@ -161,7 +185,7 @@ async function fetchGuardianAPI(): Promise<GuardianArticle[]> {
   try {
     console.log('Fetching from Guardian API...');
     const response = await fetch(
-      `https://content.guardianapis.com/search?q=education%20OR%20exam%20OR%20deadline%20OR%20admission%20OR%20university&show-fields=trailText,thumbnail&page-size=15&api-key=${guardianApiKey}`
+      `https://content.guardianapis.com/search?section=education&q=education%20school%20university%20college%20exam%20admission%20deadline&show-fields=trailText,thumbnail&page-size=15&api-key=${guardianApiKey}`
     );
 
     if (!response.ok) {
@@ -172,7 +196,9 @@ async function fetchGuardianAPI(): Promise<GuardianArticle[]> {
     const data = await response.json();
     const articles = data.response?.results || [];
     
-    // Analyze each article with AI
+    console.log(`Fetched ${articles.length} Guardian education articles`);
+    
+    // Analyze each article with AI (with fallback)
     const enhancedArticles: GuardianArticle[] = [];
     for (const article of articles.slice(0, 10)) {
       const analysis = await analyzeArticleWithAI(
